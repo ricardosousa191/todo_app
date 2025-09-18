@@ -13,104 +13,105 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 183, 58, 85),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'TODO APP'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
+
   final String title;
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  List<String> items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+  TextEditingController controller = TextEditingController();
 
   void _incrementCounter() {
     setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
       _counter++;
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      _counter--;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ColoredBox(
-        color: Colors.black,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              'TODO APP',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+      body: Container(
+        color: Colors.white,
+        padding: EdgeInsets.all(60.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            spacing: 30.0,
+            children: <Widget>[
+              Text(
+                'TODO APP',
+                style: TextStyle(color: Colors.black, fontSize: 24),
               ),
-            ),
-            Row(
-              children: [
-                Container(
-                  width: 200,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Enter something',
-                      filled: true,
-                      fillColor: Colors.white,
+              Row(
+                spacing: 20.0,
+                children: [
+                  SizedBox(
+                    width: 180,
+                    child: TextField(
+                      controller: controller,
+                      decoration: InputDecoration(
+                        hintText: 'Enter Something',
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            ElevatedButton(onPressed: () {}, child: Text('Add')),
 
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Enter something',
-                filled: true,
-                fillColor: Colors.white,
+                  ElevatedButton(
+                    onPressed: () {
+                      controller.text = items.add();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white, // Background color
+                      foregroundColor: Colors.black, // Text color
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          10,
+                        ), // Rounded corners
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 15,
+                      ), // Button padding
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ), // Text style
+                    ),
+                    child: Text('Add'),
+                  ),
+                ],
               ),
-            ),
-            ElevatedButton(
-              onPressed: _decrementCounter,
-              child: const Text('Decrement'),
-            ),
-          ],
+              Expanded(child: 
+              ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) => Text(items[index]),
+                ),
+
+              )
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
