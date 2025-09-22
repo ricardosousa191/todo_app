@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'task.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,20 +33,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  List<String> items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+  int counter = 0;
+  List<Task> tasks = [];
   TextEditingController controller = TextEditingController();
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   ElevatedButton(
                     onPressed: () {
-                      controller.text = items.add();
-                    },
+                      setState(() {
+                        tasks.add(Task(name:controller.text));
+                      });
+                      },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white, // Background color
                       foregroundColor: Colors.black, // Text color
@@ -104,8 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Expanded(child: 
               ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) => Text(items[index]),
+                itemCount: tasks.length,
+                itemBuilder: (context, index) => Text(tasks[index].name),
                 ),
 
               )
