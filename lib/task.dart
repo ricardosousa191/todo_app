@@ -1,10 +1,6 @@
 class Task {
-  String name;
-  bool isDone;
+  String nome = '';
+  bool isDone = false;
 
-  Task({required this.name, this.isDone = false});
-
-  }
-
-  
-   
+  Task(this.nome, this.isDone);
+}

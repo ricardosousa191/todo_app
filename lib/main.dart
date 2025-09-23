@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'task.dart';
-
+import 'tasktile.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.white,
+        color: const Color.fromARGB(255, 229, 252, 252),
         padding: EdgeInsets.all(60.0),
         child: Center(
           child: Column(
@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Text(
                 'TODO APP',
-                style: TextStyle(color: Colors.black, fontSize: 24),
+                style: TextStyle(color: Colors.black, fontSize: 30),
               ),
               Row(
                 spacing: 20.0,
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: TextField(
                       controller: controller,
                       decoration: InputDecoration(
-                        hintText: 'Enter Something',
+                        hintText: 'Enter the task',
                         filled: true,
                         fillColor: Colors.white,
                       ),
@@ -71,12 +71,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        tasks.add(Task(name:controller.text));
+                        tasks.add(Task(controller.text,false));
                       });
                       },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // Background color
-                      foregroundColor: Colors.black, // Text color
+                      backgroundColor: const Color.fromARGB(255, 151, 220, 237), // Background color
+                      foregroundColor: const Color.fromARGB(255, 49, 47, 47), // Text color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
                           10,
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(child: 
               ListView.builder(
                 itemCount: tasks.length,
-                itemBuilder: (context, index) => Text(tasks[index].name),
+                itemBuilder: (context, index) => Tasktile(tasks[index]),
                 ),
 
               )
