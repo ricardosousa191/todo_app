@@ -1,6 +1,6 @@
 # todo_app
 
-A new Flutter project.
+Aplicação Móvel sendo desenvolvida
 
 ## Getting Started
 
