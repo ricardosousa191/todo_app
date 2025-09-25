@@ -13,7 +13,7 @@ class _TasktileState extends State<Tasktile> {
   @override
   Widget build(BuildContext context) {
     return CheckboxListTile(
-      title: Text(widget.task.nome),
+      title: Text(widget.task.title),
       value: widget.task.isDone,
       onChanged: (bool? value) {
         setState(() {

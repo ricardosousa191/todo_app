@@ -1,110 +1,104 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'task.dart';
-import 'tasktile.dart';
+import 'task_manager.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: TodoApp()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 183, 58, 85),
-        ),
-      ),
-      home: const MyHomePage(title: 'TODO APP'),
-    );
-  }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class TodoApp extends StatefulWidget {
+  const TodoApp({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<TodoApp> createState() => _TodoAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int counter = 0;
+class _TodoAppState extends State<TodoApp> {
+  final TaskManager manager = TaskManager();
   List<Task> tasks = [];
-  TextEditingController controller = TextEditingController();
-  
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTasks();
+  }
+
+  Future<void> _loadTasks() async {
+    final loaded = await manager.loadTasks();
+    setState(() => tasks = loaded);
+  }
+
+  Future<void> _addTask(String title) async {
+    if (title.trim().isEmpty) return;
+    setState(() => tasks.add(Task(DateTime.now().toString(), title: title)));
+    await manager.saveTasks(tasks);
+    _controller.clear();
+  }
+
+  Future<void> _toggleTask(int index) async {
+    setState(() => tasks[index].isDone = !tasks[index].isDone);
+    await manager.saveTasks(tasks);
+  }
+
+  Future<void> _deleteTask(int index) async {
+    setState(() => tasks.removeAt(index));
+    await manager.saveTasks(tasks);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color.fromARGB(255, 229, 252, 252),
-        padding: EdgeInsets.all(60.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            spacing: 30.0,
-            children: <Widget>[
-              Text(
-                'TODO APP',
-                style: TextStyle(color: Colors.black, fontSize: 30),
-              ),
-              Row(
-                spacing: 20.0,
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: TextField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        hintText: 'Enter the task',
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
-                    ),
+      appBar: AppBar(title: const Text('Todo App - Class 6')),
+      body: Column(
+        children: [
+          // Input + botão
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(labelText: 'Add a task'),
                   ),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        tasks.add(Task(controller.text,false));
-                      });
-                      },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 151, 220, 237), // Background color
-                      foregroundColor: const Color.fromARGB(255, 49, 47, 47), // Text color
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          10,
-                        ), // Rounded corners
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 15,
-                      ), // Button padding
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ), // Text style
-                    ),
-                    child: Text('Add'),
-                  ),
-                ],
-              ),
-              Expanded(child: 
-              ListView.builder(
-                itemCount: tasks.length,
-                itemBuilder: (context, index) => Tasktile(tasks[index]),
                 ),
-
-              )
-            ],
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () => _addTask(_controller.text),
+                ),
+              ],
+            ),
           ),
-        ),
+          // Lista de tarefas
+          Expanded(
+            child: ListView.builder(
+              itemCount: tasks.length,
+              itemBuilder: (context, index) => ListTile(
+                leading: Checkbox(
+                  value: tasks[index].isDone,
+                  onChanged: (_) => _toggleTask(index),
+                ),
+                title: Text(
+                  tasks[index].title,
+                  style: TextStyle(
+                    decoration: tasks[index].isDone
+                        ? TextDecoration.lineThrough
+                        : null,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => _deleteTask(index),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
